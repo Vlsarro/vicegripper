@@ -12,10 +12,13 @@ import './App.css';
 import uniqueId from 'lodash/uniqueId';
 
 
-var resistanceInnerValues = [13.715, 21.625, 31.285, 42.695, 55.865, 70.785,
+const resistanceInnerValues = [13.715, 21.625, 31.285, 42.695, 55.865, 70.785,
 						     87.455, 105.885, 126.056, 147.995, 171.685, 197.125],
 	resistanceOuterValues = [9.6005, 15.1375, 21.8995, 29.8865, 39.1055, 49.5495,
-		                     61.2185, 74.1195, 88.2455, 103.5965, 120.1795, 137.9875]
+		                     61.2185, 74.1195, 88.2455, 103.5965, 120.1795, 137.9875];
+
+const INNER = false,
+	  OUTER = true;
 
 
 function lbToKg (lb) {
@@ -24,9 +27,18 @@ function lbToKg (lb) {
 
 
 class SpringNumberSelect extends React.Component {
+
+	constructor(props) {
+		super(props);
+		this.onChange = this.onChange.bind(this);
+	}
 	componentWillMount() {
 	    const id = uniqueId("prefix-");
 	    this.setState({id: id});
+	}
+
+	onChange(e) {
+		this.props.onSpringNumberChange(e.target.value);
 	}
 
 	render() {
@@ -44,7 +56,7 @@ class SpringNumberSelect extends React.Component {
 	    return (
 	    	<div style={divWrapperStyle}>
 		    	<label style={labelStyle} htmlFor={this.id}>Number of springs</label>
-		      	<select id={this.id}>
+		      	<select id={this.id} onChange={this.onChange}>
 				  	<option value="1">1</option>
 				  	<option value="2" disabled>2</option>
 				  	<option value="3" disabled>3</option>
@@ -56,7 +68,16 @@ class SpringNumberSelect extends React.Component {
 
 class GripToggle extends React.Component {
 
-	render () {
+	constructor(props) {
+		super(props);
+		this.onChange = this.onChange.bind(this);
+	}
+
+	onChange(e) {
+		this.props.onGripChange(e.target.checked);
+	}
+
+	render() {
 		let labelStyle = {
 			marginLeft: '20px',
 			verticalAlign: 'middle',
@@ -74,30 +95,64 @@ class GripToggle extends React.Component {
 		return (
 			<label style={labelStyle}>
 	        	<span style={spanStyle}>Inner</span>
-			  	<Toggle icons={false} />
+			  	<Toggle icons={false}  onChange={this.onChange} />
 			  	<span style={spanStyle}>Outer</span>
 			</label>
 		);
 	}
 }
 
-function log(value) {
-  	console.log(lbToKg(resistanceInnerValues[value])); //eslint-disable-line
-}
-
 class ResistanceSlider extends React.Component {
-	render () {
+	constructor(props) {
+		super(props);
+		this.onAfterChange = this.onAfterChange.bind(this);
+		this.state = {value: resistanceInnerValues[1]}; // TODO: get rid of state
+	}
+
+	onAfterChange(value) {
+		value = this.props.grip === INNER ? resistanceInnerValues[value] : resistanceOuterValues[value];
+		this.setState({value: this.props.weightUnit === 'kg' ? lbToKg(value) : value});
+	}
+
+	render() {
 		let divWrapperStyle = { margin: '40px 40px 20px 40px' };
 		return (
 			<div style={divWrapperStyle}>
-				<Slider dots step={1} defaultValue={1} max={11} onAfterChange={log} />
-				<p>0</p>
+				<Slider dots step={1} defaultValue={1} max={11} onAfterChange={this.onAfterChange} />
+				<p>{this.state.value + ' ' + this.props.weightUnit}</p>
 			</div>
 		);
 	}
 }
 
 class App extends Component {
+
+	constructor(props) {
+		super(props);
+
+		this.onSpringNumberChange = this.onSpringNumberChange.bind(this);
+		this.onGripChange = this.onGripChange.bind(this);
+		this.onButtonClick = this.onButtonClick.bind(this);
+
+		this.state = {
+			weightUnit: 'lbs',
+			grip: INNER,
+			springNumber: 1
+		};
+	}
+
+	onSpringNumberChange(newSpringNumber) {
+		this.setState({springNumber: newSpringNumber});
+	}
+
+	onGripChange(grip) {
+		this.setState({grip: grip});
+	}
+
+	onButtonClick(newWeightUnit) {
+		// FIXME: state problem
+		this.setState({weightUnit: newWeightUnit});
+	}
 
   	render() {
 	    return (
@@ -106,11 +161,11 @@ class App extends Component {
 					<h2>VICE GRIPPER</h2>
 				</div>
 				<div className="main-content">
-					<SpringNumberSelect />
-					<GripToggle />
-					<ResistanceSlider />
-					<Button name={'kg'} />
-					<Button name={'lbs'} />
+					<SpringNumberSelect initialValue={this.state.springNumber} onSpringNumberChange={this.onSpringNumberChange}  />
+					<GripToggle initialGrip={this.state.grip} onGripChange={this.onGripChange} />
+					<ResistanceSlider weightUnit={this.state.weightUnit} grip={this.state.grip}  />
+					<Button name={'kg'} onButtonClick={this.onButtonClick} />
+					<Button name={'lbs'} onButtonClick={this.onButtonClick}/>
 				</div>
 			</div>
 	    );
