@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import Button from './../components/button.jsx'
+
 import Slider from 'rc-slider/lib/Slider'
 import 'rc-slider/assets/index.css';
 import Toggle from 'react-toggle'
@@ -76,12 +78,6 @@ class GripToggle extends React.Component {
 			  	<span style={spanStyle}>Outer</span>
 			</label>
 		);
-	}
-}
-
-class Button extends React.Component {
-	render() {
-		return (<input className='resistance-btn' name={this.props.name} type='button' value={this.props.name}/>);
 	}
 }
 
