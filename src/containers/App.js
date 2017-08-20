@@ -17,8 +17,7 @@ const resistanceInnerValues = [13.715, 21.625, 31.285, 42.695, 55.865, 70.785,
 	resistanceOuterValues = [9.6005, 15.1375, 21.8995, 29.8865, 39.1055, 49.5495,
 		                     61.2185, 74.1195, 88.2455, 103.5965, 120.1795, 137.9875];
 
-const INNER = false,
-	  OUTER = true;
+const INNER = false;
 
 
 function lbToKg (lb) {
@@ -32,6 +31,7 @@ class SpringNumberSelect extends React.Component {
 		super(props);
 		this.onChange = this.onChange.bind(this);
 	}
+
 	componentWillMount() {
 	    const id = uniqueId("prefix-");
 	    this.setState({id: id});
@@ -42,7 +42,6 @@ class SpringNumberSelect extends React.Component {
 	}
 
 	render() {
-		const id = this.state.id;
 		const labelStyle = {
 			padding: '5px',
 		    verticalAlign: 'middle',
@@ -106,12 +105,11 @@ class ResistanceSlider extends React.Component {
 	constructor(props) {
 		super(props);
 		this.onAfterChange = this.onAfterChange.bind(this);
-		this.state = {value: resistanceInnerValues[1]}; // TODO: get rid of state
 	}
 
 	onAfterChange(value) {
-		value = this.props.grip === INNER ? resistanceInnerValues[value] : resistanceOuterValues[value];
-		this.setState({value: this.props.weightUnit === 'kg' ? lbToKg(value) : value});
+		
+		this.props.onAfterChange(value);
 	}
 
 	render() {
@@ -119,7 +117,7 @@ class ResistanceSlider extends React.Component {
 		return (
 			<div style={divWrapperStyle}>
 				<Slider dots step={1} defaultValue={1} max={11} onAfterChange={this.onAfterChange} />
-				<p>{this.state.value + ' ' + this.props.weightUnit}</p>
+				<p>{this.props.resistance + ' ' + this.props.weightUnit}</p>
 			</div>
 		);
 	}
@@ -133,12 +131,28 @@ class App extends Component {
 		this.onSpringNumberChange = this.onSpringNumberChange.bind(this);
 		this.onGripChange = this.onGripChange.bind(this);
 		this.onButtonClick = this.onButtonClick.bind(this);
+		this.onAfterChange = this.onAfterChange.bind(this);
+		this.updateResistance = this.updateResistance.bind(this);
 
 		this.state = {
 			weightUnit: 'lbs',
 			grip: INNER,
-			springNumber: 1
+			springNumber: 1,
+			resistance: resistanceInnerValues[1],
+			resistanceSliderPosition: 1
 		};
+	}
+
+	updateResistance(newResistance) {
+		let stateObject, value;
+		if (newResistance) {
+			value = this.state.grip === INNER ? resistanceInnerValues[newResistance] : resistanceOuterValues[newResistance];
+			stateObject = {resistanceSliderPosition: newResistance, resistance: this.state.weightUnit === 'kg' ? lbToKg(value) : value};
+		} else {
+			value = this.state.grip === INNER ? resistanceInnerValues[this.state.resistanceSliderPosition] : resistanceOuterValues[this.state.resistanceSliderPosition];
+			stateObject = {resistance: this.state.weightUnit === 'kg' ? lbToKg(value) : value};
+		}
+		this.setState(stateObject);
 	}
 
 	onSpringNumberChange(newSpringNumber) {
@@ -146,12 +160,15 @@ class App extends Component {
 	}
 
 	onGripChange(grip) {
-		this.setState({grip: grip});
+		this.setState({grip: grip}, this.updateResistance);
 	}
 
 	onButtonClick(newWeightUnit) {
-		// FIXME: state problem
-		this.setState({weightUnit: newWeightUnit});
+		this.setState({weightUnit: newWeightUnit}, this.updateResistance);
+	}
+
+	onAfterChange(newResistance) {
+		this.updateResistance(newResistance);
 	}
 
   	render() {
@@ -163,9 +180,9 @@ class App extends Component {
 				<div className="main-content">
 					<SpringNumberSelect initialValue={this.state.springNumber} onSpringNumberChange={this.onSpringNumberChange}  />
 					<GripToggle initialGrip={this.state.grip} onGripChange={this.onGripChange} />
-					<ResistanceSlider weightUnit={this.state.weightUnit} grip={this.state.grip}  />
+					<ResistanceSlider resistance={this.state.resistance} weightUnit={this.state.weightUnit} grip={this.state.grip} onAfterChange={this.onAfterChange}  />
 					<Button name={'kg'} onButtonClick={this.onButtonClick} />
-					<Button name={'lbs'} onButtonClick={this.onButtonClick}/>
+					<Button name={'lbs'} onButtonClick={this.onButtonClick} />
 				</div>
 			</div>
 	    );
