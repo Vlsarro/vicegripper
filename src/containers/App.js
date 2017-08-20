@@ -51,7 +51,8 @@ class SpringNumberSelect extends React.Component {
 
 		const divWrapperStyle = {
 			display: 'inline-block'
-		}
+		};
+
 		return (
 			<div style={divWrapperStyle}>
 				<label style={labelStyle} htmlFor={this.id}>Number of springs</label>
@@ -89,7 +90,7 @@ class GripToggle extends React.Component {
 			verticalAlign: 'middle',
 			fontWeight: 'normal',
 			marginBottom: '0'
-		}
+		};
 
 		return (
 			<label style={labelStyle}>
@@ -115,7 +116,8 @@ class ResistanceSlider extends React.Component {
 		let divWrapperStyle = { margin: '40px 40px 20px 40px' };
 		return (
 			<div style={divWrapperStyle}>
-				<Slider dots step={1} defaultValue={this.props.defaultPosition} max={11} onAfterChange={this.onAfterChange} />
+				<Slider dots step={1} defaultValue={this.props.defaultPosition} max={11}
+						onAfterChange={this.onAfterChange} />
 				<p>{this.props.resistance + ' ' + this.props.weightUnit}</p>
 			</div>
 		);
@@ -147,10 +149,15 @@ class App extends Component {
 	updateResistance(newPosition) {
 		let stateObject, value;
 		if (newPosition !== undefined) {
-			value = this.state.grip === INNER ? resistanceInnerValues[newPosition] : resistanceOuterValues[newPosition];
-			stateObject = {sliderPosition: newPosition, resistance: this.state.weightUnit === 'kg' ? lbToKg(value) : value};
+			value = this.state.grip === INNER ?
+                resistanceInnerValues[newPosition] : resistanceOuterValues[newPosition];
+			stateObject = {
+			    sliderPosition: newPosition,
+                resistance: this.state.weightUnit === 'kg' ? lbToKg(value) : value
+			};
 		} else {
-			value = this.state.grip === INNER ? resistanceInnerValues[this.state.sliderPosition] : resistanceOuterValues[this.state.sliderPosition];
+			value = this.state.grip === INNER ?
+                resistanceInnerValues[this.state.sliderPosition] : resistanceOuterValues[this.state.sliderPosition];
 			stateObject = {resistance: this.state.weightUnit === 'kg' ? lbToKg(value) : value};
 		}
 		this.setState(stateObject);
@@ -179,10 +186,12 @@ class App extends Component {
 					<h2>VICE GRIPPER</h2>
 				</div>
 				<div className="main-content">
-					<SpringNumberSelect initialValue={this.state.springNumber} onSpringNumberChange={this.onSpringNumberChange}  />
+					<SpringNumberSelect initialValue={this.state.springNumber}
+                                        onSpringNumberChange={this.onSpringNumberChange}  />
 					<GripToggle initialGrip={this.state.grip} onGripChange={this.onGripChange} />
 					<ResistanceSlider resistance={this.state.resistance} defaultPosition={this.state.sliderPosition}
-										weightUnit={this.state.weightUnit} grip={this.state.grip} onAfterChange={this.onAfterChange}  />
+									  weightUnit={this.state.weightUnit} grip={this.state.grip}
+									  onAfterChange={this.onAfterChange}  />
 					<Button name={'kg'} onButtonClick={this.onButtonClick} />
 					<Button name={'lbs'} onButtonClick={this.onButtonClick} />
 				</div>
