@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import Button from './../components/button.jsx'
 import GripToggle from './../components/griptoggle.jsx'
-import ResistanceSlider from './../components/resistanceslider.jsx'
+import ResistanceRange from './../components/resistanceslider.jsx'
 
 import './App.css';
 
@@ -19,6 +19,15 @@ const INNER = false;
 
 function lbToKg (lb) {
     return lb/2.2046;
+}
+
+
+function calculateResistance (positions, resistanceValuds) {
+    return positions.map((x) => {
+        return resistanceValuds[x];
+    }).reduce((a, b) => {
+        return a + b;
+    });
 }
 
 
@@ -53,10 +62,10 @@ class SpringNumberSelect extends React.Component {
         return (
             <div style={divWrapperStyle}>
                 <label style={labelStyle} htmlFor={this.id}>Number of springs</label>
-                <select id={this.id} onChange={this.onChange}>
+                <select id={this.id} onChange={this.onChange} value={this.props.springNumber}>
                     <option value="1">1</option>
-                    <option value="2" disabled>2</option>
-                    <option value="3" disabled>3</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
                 </select>
             </div>
         );
@@ -74,14 +83,16 @@ class App extends Component {
         this.onAfterChange = this.onAfterChange.bind(this);
         this.updateResistance = this.updateResistance.bind(this);
 
-        const initialSliderPosition = 1;
+        const initialSliderPosition = [1];
+        const initialSpringNumber = '1';
 
         this.state = {
             weightUnit: 'lbs',
             grip: INNER,
-            springNumber: 1,
+            springNumber: initialSpringNumber,
             resistance: resistanceInnerValues[initialSliderPosition],
-            sliderPosition: initialSliderPosition
+            sliderPosition: initialSliderPosition,
+            sliderKey: 'one-spring'
         };
     }
 
@@ -89,21 +100,57 @@ class App extends Component {
         let stateObject, value;
         if (newPosition !== undefined) {
             value = this.state.grip === INNER ?
-                resistanceInnerValues[newPosition] : resistanceOuterValues[newPosition];
+                calculateResistance(newPosition, resistanceInnerValues) :
+                calculateResistance(newPosition, resistanceOuterValues);
             stateObject = {
                 sliderPosition: newPosition,
                 resistance: this.state.weightUnit === 'kg' ? lbToKg(value) : value
             };
         } else {
             value = this.state.grip === INNER ?
-                resistanceInnerValues[this.state.sliderPosition] : resistanceOuterValues[this.state.sliderPosition];
+                calculateResistance(this.state.sliderPosition, resistanceInnerValues) :
+                calculateResistance(this.state.sliderPosition, resistanceOuterValues);
             stateObject = {resistance: this.state.weightUnit === 'kg' ? lbToKg(value) : value};
         }
         this.setState(stateObject);
     }
 
     onSpringNumberChange(newSpringNumber) {
-        this.setState({springNumber: newSpringNumber});
+        let sliderPos = [],
+            sliderKey;
+        switch (newSpringNumber) {
+            case '1':
+                sliderPos = [this.state.sliderPosition[0]];
+                sliderKey = 'one-spring';
+                break;
+            case '2':
+                if (this.state.sliderPosition.length === 1) {
+                    sliderPos = this.state.sliderPosition.slice(0);
+                    sliderPos.push(2);
+                } else if (this.state.sliderPosition.length === 3) {
+                    sliderPos = this.state.sliderPosition.slice(0, 1);
+                }
+                sliderKey = 'two-spring';
+                break;
+            case '3':
+                if (this.state.sliderPosition.length === 1) {
+                    sliderPos = this.state.sliderPosition.slice(0);
+                    sliderPos.push(2, 3);
+                } else if (this.state.sliderPosition.length === 2) {
+                    sliderPos = this.state.sliderPosition.slice(0);
+                    sliderPos.push(3);
+                }
+                sliderKey = 'three-spring';
+                break;
+            default:
+                console.error('Invalid number of springs: ' + newSpringNumber);
+                break;
+        }
+        this.setState({
+            springNumber: newSpringNumber,
+            sliderPosition: sliderPos,
+            sliderKey: sliderKey
+        }, this.updateResistance);
     }
 
     onGripChange(grip) {
@@ -128,9 +175,10 @@ class App extends Component {
                     <SpringNumberSelect initialValue={this.state.springNumber}
                                         onSpringNumberChange={this.onSpringNumberChange}  />
                     <GripToggle initialGrip={this.state.grip} onGripChange={this.onGripChange} />
-                    <ResistanceSlider resistance={this.state.resistance} defaultPosition={this.state.sliderPosition}
-                                      weightUnit={this.state.weightUnit} grip={this.state.grip}
-                                      onAfterChange={this.onAfterChange}  />
+                    <ResistanceRange resistance={this.state.resistance} defaultValue={this.state.sliderPosition}
+                                     weightUnit={this.state.weightUnit} onAfterChange={this.onAfterChange}
+                                     springNumber={parseInt(this.state.springNumber, 10)}
+                                     sliderKey={this.state.sliderKey} />
                     <Button name={'kg'} onButtonClick={this.onButtonClick} />
                     <Button name={'lbs'} onButtonClick={this.onButtonClick} />
                 </div>
