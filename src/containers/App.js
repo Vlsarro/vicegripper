@@ -128,7 +128,7 @@ class App extends Component {
                     sliderPos = this.state.sliderPosition.slice(0);
                     sliderPos.push(2);
                 } else if (this.state.sliderPosition.length === 3) {
-                    sliderPos = this.state.sliderPosition.slice(0, 1);
+                    sliderPos = this.state.sliderPosition.slice(0, 2);
                 }
                 sliderKey = 'two-spring';
                 break;
@@ -148,7 +148,7 @@ class App extends Component {
         }
         this.setState({
             springNumber: newSpringNumber,
-            sliderPosition: sliderPos,
+            sliderPosition: sliderPos.sort(),
             sliderKey: sliderKey
         }, this.updateResistance);
     }
