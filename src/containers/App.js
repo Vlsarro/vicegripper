@@ -22,9 +22,9 @@ function lbToKg (lb) {
 }
 
 
-function calculateResistance (positions, resistanceValuds) {
+function calculateResistance(positions, resistanceValues) {
     return positions.map((x) => {
-        return resistanceValuds[x];
+        return resistanceValues[x];
     }).reduce((a, b) => {
         return a + b;
     });
