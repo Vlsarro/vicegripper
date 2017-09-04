@@ -55,12 +55,8 @@ class SpringNumberSelect extends React.Component {
             marginBottom: '0'
         };
 
-        const divWrapperStyle = {
-            display: 'inline-block'
-        };
-
         return (
-            <div style={divWrapperStyle}>
+            <div className="spring-select-wrapper">
                 <label style={labelStyle} htmlFor={this.id}>Number of springs</label>
                 <select id={this.id} onChange={this.onChange} value={this.props.springNumber}>
                     <option value="1">1</option>

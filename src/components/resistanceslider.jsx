@@ -24,8 +24,7 @@ class ResistanceRange extends React.Component {
                 <Range dots step={1} max={11} onAfterChange={this.onAfterChange}
                        defaultValue={this.props.defaultValue} count={this.props.springNumber} pushable
                        tipFormatter={value => value + 1}/>
-                <p>{`Resistance: ${this.props.resistance.toPrecision(3)} ${this.props.weightUnit},
-                positions: ${this.props.defaultValue.map((x) => {return x + 1})}`}</p>
+                <p>{`Resistance: ${this.props.resistance.toPrecision(3)} ${this.props.weightUnit}, positions: ${this.props.defaultValue.map((x) => {return x + 1})}`}</p>
             </div>
         );
     }

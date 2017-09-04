@@ -39,10 +39,9 @@ option:disabled {
     -webkit-transition-duration: 0.4s; /* Safari */
     transition-duration: 0.4s;
     cursor: pointer;
-    padding: '5px';
-    margin-right: '5px';
-    margin-left: '5px';
-    border-radius: '5px';
+    margin-right: 5px;
+    margin-left: 5px;
+    border-radius: 5px;
 }
 
 .resistance-btn:hover {
@@ -56,4 +55,14 @@ option:disabled {
 
 .react-toggle {
   vertical-align: middle;
+}
+
+div.toggle-wrapper {
+    display: inline-block;
+    padding: 5px;
+}
+
+div.spring-select-wrapper {
+    display: inline-block;
+    padding: 5px;
 }

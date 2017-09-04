@@ -16,12 +16,6 @@ class GripToggle extends React.Component {
     }
 
     render() {
-        let labelStyle = {
-            marginLeft: '20px',
-            verticalAlign: 'middle',
-            fontWeight: 'normal',
-            marginBottom: '0'
-        };
 
         const spanStyle = {
             padding: '5px',
@@ -31,11 +25,13 @@ class GripToggle extends React.Component {
         };
 
         return (
-            <label style={labelStyle}>
-                <span style={spanStyle}>Inner</span>
-                <Toggle icons={false}  onChange={this.onChange} />
-                <span style={spanStyle}>Outer</span>
-            </label>
+            <div className="toggle-wrapper">
+                <label>
+                    <span style={spanStyle}>Inner</span>
+                    <Toggle icons={false}  onChange={this.onChange} />
+                    <span style={spanStyle}>Outer</span>
+                </label>
+            </div>
         );
     }
 }
