@@ -66,3 +66,52 @@ div.spring-select-wrapper {
     display: inline-block;
     padding: 5px;
 }
+
+div.weight-btns-wrapper {
+    display: inline-block;
+    /*margin-right: 28%;*/
+}
+
+div.res-input-wrapper {
+    display: inline-block;
+    float: left;
+}
+
+div.slider-wrapper {
+    margin: 25px 25px 20px;
+}
+
+.res-input {
+    padding: 12px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.res-input.invalid {
+    border: 1px solid red;
+}
+
+select.spring-select {
+    margin: 6px;
+}
+
+label.spring-label {
+    padding: 5px;
+    vertical-align: middle;
+    font-weight: normal;
+    margin-bottom: 0;
+}
+
+p.res-result {
+    line-height: 150%;
+}
+
+span.grip {
+    padding: 5px;
+    vertical-align: middle;
+    font-weight: normal;
+    margin-bottom: 0;
+}

@@ -17,14 +17,12 @@ class ResistanceRange extends React.Component {
     }
 
     render() {
-        let divWrapperStyle = { margin: '40px 40px 20px 40px' };
-
         return (
-            <div key={this.props.sliderKey} style={divWrapperStyle}>
+            <div className="slider-wrapper" key={this.props.sliderKey}>
                 <Range dots step={1} max={11} onAfterChange={this.onAfterChange}
                        defaultValue={this.props.defaultValue} count={this.props.springNumber} pushable
                        tipFormatter={value => value + 1}/>
-                <p>{`Resistance: ${this.props.resistance.toPrecision(3)} ${this.props.weightUnit}, positions: ${this.props.defaultValue.map((x) => {return x + 1})}`}</p>
+                <p className="res-result">{`Resistance: ${this.props.resistance.toPrecision(3)} ${this.props.weightUnit}, positions: ${this.props.defaultValue.map((x) => {return x + 1})}`}</p>
             </div>
         );
     }

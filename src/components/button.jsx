@@ -7,13 +7,18 @@ class Button extends React.Component {
         this.onClick = this.onClick.bind(this);
     }
 
-    onClick(e) {
+    onClick() {
         this.props.onButtonClick(this.props.name);
     }
 
     render() {
-        return (<input className='resistance-btn' name={this.props.name} type='button' onClick={this.onClick}
-                       value={this.props.name}/>);
+        let _className = 'resistance-btn';
+        if (this.props.buttonClass) {
+            _className += ` ${this.props.buttonClass}`;
+        }
+
+        return (<input className={_className} name={this.props.name} type='button' onClick={this.onClick}
+                       value={this.props.name} disabled={this.props.disabled} />);
     }
 }
 

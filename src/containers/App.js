@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 
-import Button from './../components/button.jsx'
-import GripToggle from './../components/griptoggle.jsx'
-import ResistanceRange from './../components/resistanceslider.jsx'
+import Button from './../components/button.jsx';
+import GripToggle from './../components/griptoggle.jsx';
+import ResistanceRange from './../components/resistanceslider.jsx';
+import ResistanceInput from './../components/resistanceinput.jsx';
+
+import validateResistanceInput from './../utils/validators';
 
 import './App.css';
 
@@ -57,8 +60,8 @@ class SpringNumberSelect extends React.Component {
 
         return (
             <div className="spring-select-wrapper">
-                <label style={labelStyle} htmlFor={this.id}>Number of springs</label>
-                <select id={this.id} onChange={this.onChange} value={this.props.springNumber}>
+                <label className="spring-label" style={labelStyle} htmlFor={this.id}>Number of springs</label>
+                <select className="spring-select" id={this.id} onChange={this.onChange} value={this.props.springNumber}>
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -78,6 +81,8 @@ class App extends Component {
         this.onButtonClick = this.onButtonClick.bind(this);
         this.onAfterChange = this.onAfterChange.bind(this);
         this.updateResistance = this.updateResistance.bind(this);
+        this.onResistanceInputChange = this.onResistanceInputChange.bind(this);
+        this.onResistanceBtnClick = this.onResistanceBtnClick.bind(this);
 
         const initialSliderPosition = [1];
         const initialSpringNumber = '1';
@@ -88,7 +93,10 @@ class App extends Component {
             springNumber: initialSpringNumber,
             resistance: resistanceInnerValues[initialSliderPosition],
             sliderPosition: initialSliderPosition,
-            sliderKey: 'one-spring'
+            sliderKey: 'one-spring',
+            resistanceInputVal: '0',
+            resistanceInputClass: 'valid',
+            btnDisabled: false
         };
     }
 
@@ -161,6 +169,35 @@ class App extends Component {
         this.updateResistance(newPosition);
     }
 
+    onResistanceBtnClick() {
+        console.log('Res btn clicked');
+        console.log(this.state.resistanceInputVal);
+        switch (this.state.springNumber) {
+            case '1':
+                console.log(1);
+                break;
+            case '2':
+                console.log(2);
+                break;
+            case '3':
+                console.log(3);
+                break;
+            default:
+                console.log('default');
+                break;
+        }
+    }
+
+    onResistanceInputChange(value) {
+        let inputClass = validateResistanceInput(value, this.state.weightUnit);
+        let btnDisabled = inputClass === 'invalid';
+        this.setState({
+            resistanceInputVal: value,
+            btnDisabled: btnDisabled,
+            resistanceInputClass: inputClass
+        });
+    }
+
     render() {
         return (
             <div className="App">
@@ -175,8 +212,13 @@ class App extends Component {
                                      weightUnit={this.state.weightUnit} onAfterChange={this.onAfterChange}
                                      springNumber={parseInt(this.state.springNumber, 10)}
                                      sliderKey={this.state.sliderKey} />
-                    <Button name={'kg'} onButtonClick={this.onButtonClick} />
-                    <Button name={'lbs'} onButtonClick={this.onButtonClick} />
+                    <ResistanceInput inputClass={this.state.resistanceInputClass}
+                                     onButtonClick={this.onResistanceBtnClick} disabled={this.state.btnDisabled}
+                                     onChange={this.onResistanceInputChange} weightUnit={this.state.weightUnit} />
+                    <div className="weight-btns-wrapper">
+                        <Button name={'kg'} onButtonClick={this.onButtonClick} />
+                        <Button name={'lbs'} onButtonClick={this.onButtonClick} />
+                    </div>
                 </div>
             </div>
         );

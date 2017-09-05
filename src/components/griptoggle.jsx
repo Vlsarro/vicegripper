@@ -16,20 +16,12 @@ class GripToggle extends React.Component {
     }
 
     render() {
-
-        const spanStyle = {
-            padding: '5px',
-            verticalAlign: 'middle',
-            fontWeight: 'normal',
-            marginBottom: '0'
-        };
-
         return (
             <div className="toggle-wrapper">
                 <label>
-                    <span style={spanStyle}>Inner</span>
+                    <span className="grip" title="Inner grip">I</span>
                     <Toggle icons={false}  onChange={this.onChange} />
-                    <span style={spanStyle}>Outer</span>
+                    <span className="grip" title="Outer grip">O</span>
                 </label>
             </div>
         );
