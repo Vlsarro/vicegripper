@@ -6,6 +6,7 @@ import ResistanceRange from './../components/resistanceslider.jsx';
 import ResistanceInput from './../components/resistanceinput.jsx';
 
 import validateResistanceInput from './../utils/validators';
+import {lbToKg, kgToLb, calculateResistance, calculateSliderPositions} from './../utils/calculation';
 
 import './App.css';
 
@@ -18,20 +19,6 @@ const resistanceInnerValues = [13.715, 21.625, 31.285, 42.695, 55.865, 70.785,
                              61.2185, 74.1195, 88.2455, 103.5965, 120.1795, 137.9875];
 
 const INNER = false;
-
-
-function lbToKg (lb) {
-    return lb/2.2046;
-}
-
-
-function calculateResistance(positions, resistanceValues) {
-    return positions.map((x) => {
-        return resistanceValues[x];
-    }).reduce((a, b) => {
-        return a + b;
-    });
-}
 
 
 class SpringNumberSelect extends React.Component {
@@ -96,7 +83,7 @@ class App extends Component {
             sliderKey: 'one-spring',
             resistanceInputVal: '0',
             resistanceInputClass: 'valid',
-            btnDisabled: false
+            btnDisabled: true
         };
     }
 
@@ -170,22 +157,27 @@ class App extends Component {
     }
 
     onResistanceBtnClick() {
-        console.log('Res btn clicked');
-        console.log(this.state.resistanceInputVal);
-        switch (this.state.springNumber) {
-            case '1':
-                console.log(1);
-                break;
-            case '2':
-                console.log(2);
-                break;
-            case '3':
-                console.log(3);
-                break;
-            default:
-                console.log('default');
-                break;
+        let result,
+            resistance = parseFloat(this.state.resistanceInputVal);
+
+        if (this.state.weightUnit === 'kg') {
+            resistance = kgToLb(resistance);
         }
+
+        if (this.state.grip === INNER) {
+            result = calculateSliderPositions(this.state.springNumber, resistanceInnerValues,
+                resistance);
+        } else {
+            result = calculateSliderPositions(this.state.springNumber, resistanceOuterValues,
+                resistance);
+        }
+
+        this.setState((prevState) => {
+            return {
+                sliderPosition: [result],
+                sliderKey: prevState.sliderKey + '_'  // change key for slider rerendering
+            };
+        }, this.updateResistance([result]));
     }
 
     onResistanceInputChange(value) {

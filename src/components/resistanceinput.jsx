@@ -25,7 +25,6 @@ class ResistanceInput extends React.Component {
         } else {
             _textInputClass = 'res-input';
         }
-        console.log(this.props);
         return (
             <div className="res-input-wrapper">
                 <input className={_textInputClass} type="text"
