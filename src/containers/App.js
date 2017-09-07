@@ -174,10 +174,10 @@ class App extends Component {
 
         this.setState((prevState) => {
             return {
-                sliderPosition: [result],
+                sliderPosition: result,
                 sliderKey: prevState.sliderKey + '_'  // change key for slider rerendering
             };
-        }, this.updateResistance([result]));
+        }, this.updateResistance(result));
     }
 
     onResistanceInputChange(value) {
