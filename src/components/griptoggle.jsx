@@ -20,7 +20,7 @@ class GripToggle extends React.Component {
             <div className="toggle-wrapper">
                 <label>
                     <span className="grip" title="Inner grip">I</span>
-                    <Toggle icons={false}  onChange={this.onChange} />
+                    <Toggle icons={false} onChange={this.onChange} />
                     <span className="grip" title="Outer grip">O</span>
                 </label>
             </div>
