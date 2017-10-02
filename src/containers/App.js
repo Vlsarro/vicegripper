@@ -5,7 +5,7 @@ import GripToggle from './../components/griptoggle.jsx';
 import ResistanceRange from './../components/resistanceslider.jsx';
 import ResistanceInput from './../components/resistanceinput.jsx';
 
-import validateResistanceInput from './../utils/validators';
+import {validateResistanceInput, lowerLimit, upperLimit} from './../utils/validators';
 import {lbToKg, kgToLb, calculateResistance, calculateSliderPositions} from './../utils/calculation';
 
 import './App.css';
@@ -83,7 +83,8 @@ class App extends Component {
             sliderKey: 'one-spring',
             resistanceInputVal: '0',
             resistanceInputClass: 'valid',
-            btnDisabled: true
+            btnDisabled: true,
+            resistanceInputInvalidMsg: ''
         };
     }
 
@@ -164,12 +165,21 @@ class App extends Component {
             resistance = kgToLb(resistance);
         }
 
-        if (this.state.grip === INNER) {
-            result = calculateSliderPositions(this.state.springNumber, resistanceInnerValues,
-                resistance);
-        } else {
-            result = calculateSliderPositions(this.state.springNumber, resistanceOuterValues,
-                resistance);
+        try {
+            if (this.state.grip === INNER) {
+                result = calculateSliderPositions(this.state.springNumber, resistanceInnerValues,
+                    resistance);
+            } else {
+                result = calculateSliderPositions(this.state.springNumber, resistanceOuterValues,
+                    resistance);
+            }
+        } catch (err) {
+            console.error(err);
+            this.setState({
+                resistanceInputClass: 'invalid',
+                resistanceInputInvalidMsg: 'Suitable positions not found'
+            });
+            return;
         }
 
         this.setState((prevState) => {
@@ -181,12 +191,14 @@ class App extends Component {
     }
 
     onResistanceInputChange(value) {
-        let inputClass = validateResistanceInput(value, this.state.weightUnit);
+        let inputClass = validateResistanceInput(value);
         let btnDisabled = inputClass === 'invalid';
         this.setState({
             resistanceInputVal: value,
             btnDisabled: btnDisabled,
-            resistanceInputClass: inputClass
+            resistanceInputClass: inputClass,
+            resistanceInputInvalidMsg: `The value should be between ${lowerLimit} and ${upperLimit}
+                                        ${this.state.weightUnit}`
         });
     }
 
@@ -206,7 +218,8 @@ class App extends Component {
                                      sliderKey={this.state.sliderKey} />
                     <ResistanceInput inputClass={this.state.resistanceInputClass}
                                      onButtonClick={this.onResistanceBtnClick} disabled={this.state.btnDisabled}
-                                     onChange={this.onResistanceInputChange} weightUnit={this.state.weightUnit} />
+                                     onChange={this.onResistanceInputChange} weightUnit={this.state.weightUnit}
+                                     invalidMsg={this.state.resistanceInputInvalidMsg} />
                     <div className="weight-btns-wrapper">
                         <Button name={'kg'} onButtonClick={this.onButtonClick} />
                         <Button name={'lbs'} onButtonClick={this.onButtonClick} />

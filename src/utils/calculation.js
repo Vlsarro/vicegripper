@@ -1,3 +1,10 @@
+import _ from 'lodash/core';
+
+function NoCombinationsError(message) {
+    this.message = message;
+    this.name = 'NoCombinationsError';
+}
+
 
 const maxDiff = 11.0231;  // 5 kg in lbs
 
@@ -38,7 +45,11 @@ function getCombinations(arr, cLen, num) {
         listOfCombinations = {},
         data = new Array(cLen);
     listOfCombinations = combinationUtil(arr, data, 0, arrLen - 1, 0, cLen, listOfCombinations, num);
-    return listOfCombinations;
+    if (!_.isEmpty(listOfCombinations)) {
+        return listOfCombinations;
+    } else {
+        throw new NoCombinationsError('No valid combinations');
+    }
 }
 
 /**

@@ -1,15 +1,12 @@
-function validateResistanceInput(val, weightUnit) {
+const lowerLimit = 5,
+    upperLimit = 190;
+
+function validateResistanceInput(val) {
     val = parseFloat(val);
-    if (weightUnit === 'kg') {
-        if (val < 5 || val > 190) {
-            return 'invalid'
-        }
-    } else if (weightUnit === 'lbs') {
-        if (val < 5 || val > 190) {
-            return 'invalid';
-        }
+    if (val < lowerLimit || val > upperLimit) {
+        return 'invalid'
     }
     return 'valid';
 }
 
-export default validateResistanceInput;
+export {validateResistanceInput, lowerLimit, upperLimit};

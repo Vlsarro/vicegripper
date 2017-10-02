@@ -72,9 +72,28 @@ div.weight-btns-wrapper {
     /*margin-right: 28%;*/
 }
 
-div.res-input-wrapper {
+div.res-input-comp-wrapper {
     display: inline-block;
     float: left;
+}
+
+div.res-input-wrapper {
+    display: inline-block;
+    vertical-align: top;
+}
+
+div.res-input-wrapper small {
+    display: block;
+    font-size: 11px;
+    margin: 0;
+}
+
+div.res-input-wrapper input[type="text"] {
+    margin-bottom: 0;
+}
+
+div.res-input-wrapper small.invalid {
+    color: red;
 }
 
 div.slider-wrapper {

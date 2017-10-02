@@ -26,9 +26,14 @@ class ResistanceInput extends React.Component {
             _textInputClass = 'res-input';
         }
         return (
-            <div className="res-input-wrapper">
-                <input className={_textInputClass} type="text"
-                       onChange={this.onChange} placeholder={placeholder} />
+            <div className="res-input-comp-wrapper">
+                <div className="res-input-wrapper">
+                    <input data-tip data-for='resistanceToolTip' className={_textInputClass} type="text"
+                           onChange={this.onChange} placeholder={placeholder} />
+                    {this.props.inputClass === 'invalid' &&
+                        <small className={this.props.inputClass}>{this.props.invalidMsg}</small>
+                    }
+                </div>
                 <Button buttonClass={this.props.calcBtnClass} name={'CALC'} disabled={this.props.disabled}
                         onButtonClick={this.onButtonClick} />
             </div>
