@@ -124,12 +124,16 @@ function calculateSliderPositions(springNumber, arr, resistance) {
     }
 }
 
+function roundToTwoDigitsAfterComma(floatNumber) {
+    return parseFloat((Math.round(floatNumber * 100) / 100).toFixed(2));
+}
+
 function lbToKg(lb) {
-    return lb/2.2046;
+    return roundToTwoDigitsAfterComma(lb / 2.2046);
 }
 
 function kgToLb(kg) {
-    return kg*2.2046;
+    return roundToTwoDigitsAfterComma(kg * 2.2046);
 }
 
 function calculateResistance(positions, resistanceValues) {
