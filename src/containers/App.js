@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
 
-import Button from './../components/button.jsx';
-import GripToggle from './../components/griptoggle.jsx';
-import ResistanceRange from './../components/resistanceslider.jsx';
-import ResistanceInput from './../components/resistanceinput.jsx';
+import Button from '../components/button.jsx';
+import GripToggle from '../components/griptoggle.jsx';
+import ResistanceRange from '../components/resistanceslider.jsx';
+import ResistanceInput from '../components/resistanceinput.jsx';
+import SpringNumberSelect from "../components/springnumberselect";
 
 import {validateResistanceInput, lowerLimit, upperLimit} from './../utils/validators';
 import {lbToKg, kgToLb, calculateResistance, calculateSliderPositions} from './../utils/calculation';
 
 import './App.css';
-
-import uniqueId from 'lodash/uniqueId';
 
 
 const resistanceInnerValues = [13.715, 21.625, 31.285, 42.695, 55.865, 70.785,
@@ -20,43 +19,6 @@ const resistanceInnerValues = [13.715, 21.625, 31.285, 42.695, 55.865, 70.785,
 
 const INNER = false;
 
-
-class SpringNumberSelect extends React.Component {
-
-    constructor(props) {
-        super(props);
-        this.onChange = this.onChange.bind(this);
-    }
-
-    componentWillMount() {
-        const id = uniqueId("prefix-");
-        this.setState({id: id});
-    }
-
-    onChange(e) {
-        this.props.onSpringNumberChange(e.target.value);
-    }
-
-    render() {
-        const labelStyle = {
-            padding: '5px',
-            verticalAlign: 'middle',
-            fontWeight: 'normal',
-            marginBottom: '0'
-        };
-
-        return (
-            <div className="spring-select-wrapper">
-                <label className="spring-label" style={labelStyle} htmlFor={this.id}>Number of springs</label>
-                <select className="spring-select" id={this.id} onChange={this.onChange} value={this.props.springNumber}>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                </select>
-            </div>
-        );
-    }
-}
 
 class App extends Component {
 
