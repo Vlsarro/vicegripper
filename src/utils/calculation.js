@@ -107,7 +107,7 @@ function chooseClosest(combinations, resistance) {
 }
 
 
-function calculateSliderPositions(springNumber, arr, resistance) {
+export function calculateSliderPositions(springNumber, arr, resistance) {
     let combinations;
     switch (springNumber) {
         case '1':
@@ -128,20 +128,18 @@ function roundToTwoDigitsAfterComma(floatNumber) {
     return parseFloat((Math.round(floatNumber * 100) / 100).toFixed(2));
 }
 
-function lbToKg(lb) {
+export function lbToKg(lb) {
     return roundToTwoDigitsAfterComma(lb / 2.2046);
 }
 
-function kgToLb(kg) {
+export function kgToLb(kg) {
     return roundToTwoDigitsAfterComma(kg * 2.2046);
 }
 
-function calculateResistance(positions, resistanceValues) {
+export function calculateResistance(positions, resistanceValues) {
     return positions.map((x) => {
         return resistanceValues[x];
     }).reduce((a, b) => {
         return a + b;
     });
 }
-
-export {lbToKg, kgToLb, calculateResistance, calculateSliderPositions};

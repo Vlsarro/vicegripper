@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 
-import Button from '../components/button.jsx';
-import GripToggle from '../components/griptoggle.jsx';
-import ResistanceRange from '../components/resistanceslider.jsx';
-import ResistanceInput from '../components/resistanceinput.jsx';
-import SpringNumberSelect from "../components/springnumberselect";
+import Button from '../components/Button.jsx';
+import GripToggle from '../components/GripToggle.jsx';
+import ResistanceRange from '../components/ResistanceRange.jsx';
+import ResistanceInput from '../components/ResistanceInput.jsx';
+import SpringNumberSelect from "../components/SpringNumberSelect.jsx";
 
-import {validateResistanceInput, lowerLimit, upperLimit} from './../utils/validators';
-import {lbToKg, kgToLb, calculateResistance, calculateSliderPositions} from './../utils/calculation';
+import {
+    validateResistanceInput, lowerLimit, upperLimit, lbToKg, kgToLb, calculateResistance, calculateSliderPositions
+} from '../utils';
 
 import './App.css';
 
@@ -171,9 +172,8 @@ class App extends Component {
                     <h2>VICE GRIPPER</h2>
                 </div>
                 <div className="main-content">
-                    <SpringNumberSelect initialValue={this.state.springNumber}
-                                        onSpringNumberChange={this.onSpringNumberChange}  />
-                    <GripToggle initialGrip={this.state.grip} onGripChange={this.onGripChange} />
+                    <SpringNumberSelect springNumber={this.state.springNumber} onChange={this.onSpringNumberChange} />
+                    <GripToggle onChange={this.onGripChange} />
                     <ResistanceRange resistance={this.state.resistance} defaultValue={this.state.sliderPosition}
                                      weightUnit={this.state.weightUnit} onAfterChange={this.onAfterChange}
                                      springNumber={parseInt(this.state.springNumber, 10)}
@@ -183,8 +183,8 @@ class App extends Component {
                                      onChange={this.onResistanceInputChange} weightUnit={this.state.weightUnit}
                                      invalidMsg={this.state.resistanceInputInvalidMsg} />
                     <div className="weight-btns-wrapper">
-                        <Button name={'kg'} onButtonClick={this.onButtonClick} />
-                        <Button name={'lbs'} onButtonClick={this.onButtonClick} />
+                        <Button name={'kg'} onClick={this.onButtonClick} />
+                        <Button name={'lbs'} onClick={this.onButtonClick} />
                     </div>
                 </div>
             </div>
