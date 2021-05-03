@@ -107,8 +107,8 @@ function combinationUtil(arr, data, start, end, index, r, list, num) {
  * @returns {array} spring positions
  */
 function chooseClosest(combinations, resistance) {
-    let values = Object.keys(combinations);
-    let indexOfClosest = closest(resistance, values);
+    const values = Object.keys(combinations).sort();
+    const indexOfClosest = closest(resistance, values);
     return combinations[values[indexOfClosest]];
 }
 
