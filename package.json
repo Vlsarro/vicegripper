@@ -1,6 +1,6 @@
 {
   "name": "vicegripper",
-  "version": "0.9.9",
+  "version": "1.0.0",
   "private": false,
   "dependencies": {
     "@testing-library/jest-dom": "^5.11.4",
