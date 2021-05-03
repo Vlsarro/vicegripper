@@ -1,23 +1,21 @@
 import React, { Component } from 'react';
 
-import Button from '../components/button.jsx';
-import GripToggle from '../components/griptoggle.jsx';
-import ResistanceRange from '../components/resistanceslider.jsx';
-import ResistanceInput from '../components/resistanceinput.jsx';
-import SpringNumberSelect from "../components/springnumberselect";
+import Button from '../components/Button.jsx';
+import GripToggle from '../components/GripToggle.jsx';
+import ResistanceRange from '../components/ResistanceRange.jsx';
+import ResistanceInput from '../components/ResistanceInput.jsx';
+import SpringNumberSelect from "../components/SpringNumberSelect.jsx";
 
-import {validateResistanceInput, lowerLimit, upperLimit} from './../utils/validators';
-import {lbToKg, kgToLb, calculateResistance, calculateSliderPositions} from './../utils/calculation';
+import {
+    validateResistanceInput, lowerLimit, upperLimit, lbToKg, kgToLb, calculateResistance, calculateSliderPositions,
+    innerGripResistanceValues
+} from '../utils';
 
 import './App.css';
 
-
-const resistanceInnerValues = [13.715, 21.625, 31.285, 42.695, 55.865, 70.785,
-                               87.455, 105.885, 126.056, 147.995, 171.685, 197.125],
-    resistanceOuterValues = [9.6005, 15.1375, 21.8995, 29.8865, 39.1055, 49.5495,
-                             61.2185, 74.1195, 88.2455, 103.5965, 120.1795, 137.9875];
-
 const INNER = false;
+const POUND = 'lb'
+const KILOGRAM = 'kg'
 
 
 class App extends Component {
@@ -37,10 +35,10 @@ class App extends Component {
         const initialSpringNumber = '1';
 
         this.state = {
-            weightUnit: 'lbs',
+            weightUnit: POUND,
             grip: INNER,
             springNumber: initialSpringNumber,
-            resistance: resistanceInnerValues[initialSliderPosition],
+            resistance: innerGripResistanceValues[initialSliderPosition],
             sliderPosition: initialSliderPosition,
             sliderKey: 'one-spring',
             resistanceInputVal: '0',
@@ -53,18 +51,14 @@ class App extends Component {
     updateResistance(newPosition) {
         let stateObject, value;
         if (newPosition !== undefined) {
-            value = this.state.grip === INNER ?
-                calculateResistance(newPosition, resistanceInnerValues) :
-                calculateResistance(newPosition, resistanceOuterValues);
+            value = calculateResistance(newPosition, this.state.grip === INNER)
             stateObject = {
                 sliderPosition: newPosition,
-                resistance: this.state.weightUnit === 'kg' ? lbToKg(value) : value
+                resistance: this.state.weightUnit === KILOGRAM ? lbToKg(value) : value
             };
         } else {
-            value = this.state.grip === INNER ?
-                calculateResistance(this.state.sliderPosition, resistanceInnerValues) :
-                calculateResistance(this.state.sliderPosition, resistanceOuterValues);
-            stateObject = {resistance: this.state.weightUnit === 'kg' ? lbToKg(value) : value};
+            value = calculateResistance(this.state.sliderPosition, this.state.grip === INNER)
+            stateObject = {resistance: this.state.weightUnit === KILOGRAM ? lbToKg(value) : value};
         }
         this.setState(stateObject);
     }
@@ -123,18 +117,12 @@ class App extends Component {
         let result,
             resistance = parseFloat(this.state.resistanceInputVal);
 
-        if (this.state.weightUnit === 'kg') {
+        if (this.state.weightUnit === KILOGRAM) {
             resistance = kgToLb(resistance);
         }
 
         try {
-            if (this.state.grip === INNER) {
-                result = calculateSliderPositions(this.state.springNumber, resistanceInnerValues,
-                    resistance);
-            } else {
-                result = calculateSliderPositions(this.state.springNumber, resistanceOuterValues,
-                    resistance);
-            }
+            result = calculateSliderPositions(this.state.springNumber, this.state.grip === INNER, resistance);
         } catch (err) {
             console.error(err);
             this.setState({
@@ -171,9 +159,8 @@ class App extends Component {
                     <h2>VICE GRIPPER</h2>
                 </div>
                 <div className="main-content">
-                    <SpringNumberSelect initialValue={this.state.springNumber}
-                                        onSpringNumberChange={this.onSpringNumberChange}  />
-                    <GripToggle initialGrip={this.state.grip} onGripChange={this.onGripChange} />
+                    <SpringNumberSelect springNumber={this.state.springNumber} onChange={this.onSpringNumberChange} />
+                    <GripToggle onChange={this.onGripChange} />
                     <ResistanceRange resistance={this.state.resistance} defaultValue={this.state.sliderPosition}
                                      weightUnit={this.state.weightUnit} onAfterChange={this.onAfterChange}
                                      springNumber={parseInt(this.state.springNumber, 10)}
@@ -183,8 +170,8 @@ class App extends Component {
                                      onChange={this.onResistanceInputChange} weightUnit={this.state.weightUnit}
                                      invalidMsg={this.state.resistanceInputInvalidMsg} />
                     <div className="weight-btns-wrapper">
-                        <Button name={'kg'} onButtonClick={this.onButtonClick} />
-                        <Button name={'lbs'} onButtonClick={this.onButtonClick} />
+                        <Button name={KILOGRAM} onClick={this.onButtonClick} />
+                        <Button name={POUND} onClick={this.onButtonClick} />
                     </div>
                 </div>
             </div>

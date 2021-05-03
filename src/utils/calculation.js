@@ -6,7 +6,15 @@ function NoCombinationsError(message) {
 }
 
 
-const maxDiff = 11.0231;  // 5 kg in lbs
+const maxDiff = 11.0231;  // 5 kilograms in pounds
+
+// values are in pounds
+export const innerGripResistanceValues = [
+    13.715, 21.625, 31.285, 42.695, 55.865, 70.785, 87.455, 105.885, 126.056, 147.995, 171.685, 197.125
+]
+export const outerGripResistanceValues = [
+    9.6005, 15.1375, 21.8995, 29.8865, 39.1055, 49.5495, 61.2185, 74.1195, 88.2455, 103.5965, 120.1795, 137.9875
+]
 
 /**
  * a binary search to find the closest element in array
@@ -27,10 +35,8 @@ function closest(num, arr) {
         }
     }
     if (num - arr[lo] <= arr[hi] - num) {
-        console.log(arr[lo]);
         return lo;
     }
-    // console.log(arr[hi]);
     return hi;
 }
 
@@ -101,14 +107,15 @@ function combinationUtil(arr, data, start, end, index, r, list, num) {
  * @returns {array} spring positions
  */
 function chooseClosest(combinations, resistance) {
-    let values = Object.keys(combinations);
-    let indexOfClosest = closest(resistance, values);
+    const values = Object.keys(combinations).sort();
+    const indexOfClosest = closest(resistance, values);
     return combinations[values[indexOfClosest]];
 }
 
 
-function calculateSliderPositions(springNumber, arr, resistance) {
+export function calculateSliderPositions(springNumber, isInnerGrip, resistance) {
     let combinations;
+    const arr = isInnerGrip ? innerGripResistanceValues : outerGripResistanceValues;
     switch (springNumber) {
         case '1':
             return [closest(resistance, arr)];
@@ -128,20 +135,20 @@ function roundToTwoDigitsAfterComma(floatNumber) {
     return parseFloat((Math.round(floatNumber * 100) / 100).toFixed(2));
 }
 
-function lbToKg(lb) {
-    return roundToTwoDigitsAfterComma(lb / 2.2046);
+const oneKgInLb = 2.2046
+
+export function lbToKg(lb) {
+    return roundToTwoDigitsAfterComma(lb / oneKgInLb);
 }
 
-function kgToLb(kg) {
-    return roundToTwoDigitsAfterComma(kg * 2.2046);
+export function kgToLb(kg) {
+    return roundToTwoDigitsAfterComma(kg * oneKgInLb);
 }
 
-function calculateResistance(positions, resistanceValues) {
+export function calculateResistance(positions, isInnerGrip) {
     return positions.map((x) => {
-        return resistanceValues[x];
+        return isInnerGrip ? innerGripResistanceValues[x] : outerGripResistanceValues[x]
     }).reduce((a, b) => {
         return a + b;
     });
 }
-
-export {lbToKg, kgToLb, calculateResistance, calculateSliderPositions};
