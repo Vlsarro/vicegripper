@@ -1,13 +1,21 @@
-import React from 'react';
 import Button from './Button'
-import PropTypes from 'prop-types';
 
-const ResistanceInput = ({onChange, onButtonClick, weightUnit, inputClass, invalidMsg, calcBtnClass, disabled}) => {
+type ResistanceInputProps = {
+    onChange: Function,
+    onButtonClick: Function,
+    weightUnit: string,
+    inputClass?: string,
+    invalidMsg: string,
+    calcBtnClass?: string,
+    disabled?: boolean
+}
+
+const ResistanceInput = ({onChange, onButtonClick, weightUnit, inputClass, invalidMsg, calcBtnClass, disabled = false}: ResistanceInputProps): JSX.Element => {
     const placeholder = `Enter resistance (in ${weightUnit})`
     const baseTextInputClass = 'res-input'
     const textInputClass = inputClass ? `${baseTextInputClass} ${inputClass}` : baseTextInputClass
 
-    const onChangeHandler = (e) => {
+    const onChangeHandler = (e: any) => {
         onChange(e.target.value)
     }
 
@@ -24,20 +32,6 @@ const ResistanceInput = ({onChange, onButtonClick, weightUnit, inputClass, inval
                     onClick={onButtonClick} />
         </div>
     )
-}
-
-ResistanceInput.propTypes = {
-    onChange: PropTypes.func.isRequired,
-    onButtonClick: PropTypes.func.isRequired,
-    weightUnit: PropTypes.string.isRequired,
-    inputClass: PropTypes.string,
-    invalidMsg: PropTypes.string.isRequired,
-    calcBtnClass: PropTypes.string,
-    disabled: PropTypes.bool
-}
-
-ResistanceInput.defaultProps = {
-    disabled: false
 }
 
 export default ResistanceInput;
