@@ -1,10 +1,11 @@
-import _ from 'lodash/core';
+import _ from 'lodash';
 
-function NoCombinationsError(message) {
-    this.message = message;
-    this.name = 'NoCombinationsError';
+class NoCombinationsError extends Error {
+    constructor(message: string) {
+        super(message);
+        Object.setPrototypeOf(this, NoCombinationsError.prototype);
+    }
 }
-
 
 const maxDiff = 11.0231;  // 5 kilograms in pounds
 
@@ -22,8 +23,8 @@ export const outerGripResistanceValues = [
  * @param arr input array
  * @returns {number} closest element to num
  */
-function closest(num, arr) {
-    let mid,
+function closest(num: number, arr: number[]): number {
+    let mid: number,
         lo = 0,
         hi = arr.length - 1;
     while (hi - lo > 1) {
@@ -40,17 +41,21 @@ function closest(num, arr) {
     return hi;
 }
 
+type resistanceCombinations = {
+    [key: number]: number[]
+}
+
 /**
  * Return all combinations of size cLen in an arr, which sum is close to num
  * @param arr array to search in
  * @param cLen size of the combination
  * @param num {number} desired value
  */
-function getCombinations(arr, cLen, num) {
+function getCombinations(arr: number[], cLen: number, num: number): resistanceCombinations {
     let arrLen = arr.length,
-        listOfCombinations = {},
+        tmpListOfCombinations = {} as resistanceCombinations,
         data = new Array(cLen);
-    listOfCombinations = combinationUtil(arr, data, 0, arrLen - 1, 0, cLen, listOfCombinations, num);
+    const listOfCombinations = combinationUtil(arr, data, 0, arrLen - 1, 0, cLen, tmpListOfCombinations, num);
     if (!_.isEmpty(listOfCombinations)) {
         return listOfCombinations;
     } else {
@@ -65,10 +70,10 @@ function getCombinations(arr, cLen, num) {
  * @param end {number} ending index in arr
  * @param index {number} current index in data
  * @param r {number} size of a combination
- * @param list linked list to store combinations
+ * @param list list to store combinations
  * @param num {number} desired value
  */
-function combinationUtil(arr, data, start, end, index, r, list, num) {
+function combinationUtil(arr: number[], data: number[], start: number, end: number, index: number, r: number, list: resistanceCombinations, num: number): resistanceCombinations | undefined {
     // Current combination is ready to be stored, push it to linked list
     if (index === r) {
         let rArr = new Array(r);
@@ -106,23 +111,23 @@ function combinationUtil(arr, data, start, end, index, r, list, num) {
  * @param resistance desired resistance value
  * @returns {array} spring positions
  */
-function chooseClosest(combinations, resistance) {
-    const values = Object.keys(combinations).sort();
+function chooseClosest(combinations: resistanceCombinations, resistance: number): number[] {
+    const values = Object.keys(combinations).sort() as unknown as number[];
     const indexOfClosest = closest(resistance, values);
     return combinations[values[indexOfClosest]];
 }
 
 
-export function calculateSliderPositions(springNumber, isInnerGrip, resistance) {
-    let combinations;
+export function calculateSliderPositions(springNumber: number, isInnerGrip: boolean, resistance: number): number[] | undefined {
+    let combinations: resistanceCombinations;
     const arr = isInnerGrip ? innerGripResistanceValues : outerGripResistanceValues;
     switch (springNumber) {
-        case '1':
+        case 1:
             return [closest(resistance, arr)];
-        case '2':
+        case 2:
             combinations = getCombinations(arr, 2, resistance);
             return chooseClosest(combinations, resistance);
-        case '3':
+        case 3:
             combinations = getCombinations(arr, 3, resistance);
             return chooseClosest(combinations, resistance);
         default:
@@ -131,21 +136,21 @@ export function calculateSliderPositions(springNumber, isInnerGrip, resistance) 
     }
 }
 
-function roundToTwoDigitsAfterComma(floatNumber) {
+function roundToTwoDigitsAfterComma(floatNumber: number): number {
     return parseFloat((Math.round(floatNumber * 100) / 100).toFixed(2));
 }
 
 const oneKgInLb = 2.2046
 
-export function lbToKg(lb) {
+export function lbToKg(lb: number): number {
     return roundToTwoDigitsAfterComma(lb / oneKgInLb);
 }
 
-export function kgToLb(kg) {
+export function kgToLb(kg: number): number {
     return roundToTwoDigitsAfterComma(kg * oneKgInLb);
 }
 
-export function calculateResistance(positions, isInnerGrip) {
+export function calculateResistance(positions: number[], isInnerGrip: boolean): number {
     return positions.map((x) => {
         return isInnerGrip ? innerGripResistanceValues[x] : outerGripResistanceValues[x]
     }).reduce((a, b) => {
